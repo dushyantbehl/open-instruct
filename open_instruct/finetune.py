@@ -909,6 +909,7 @@ def main(args: FlatArguments, tc: TokenizerConfig):
     logger.info(f"  Total train batch size (w. parallel, distributed & accumulation) = {total_batch_size}")
     logger.info(f"  Gradient Accumulation steps = {args.gradient_accumulation_steps}")
     logger.info(f"  Total optimization steps = {args.max_train_steps}")
+    logger.info(f"  Logging steps = {args.logging_steps}")
     logger.info("\n ================================================================================")
 
     
@@ -1007,6 +1008,13 @@ def main(args: FlatArguments, tc: TokenizerConfig):
                     if args.load_balancing_loss:
                         aux_loss = args.load_balancing_weight * outputs.aux_loss
                         loss += aux_loss
+                        logger.info(
+                            f"load balancing loss is enabled {aux_loss}"
+                        )
+                    logger.info(
+                        f"Loss right from function: {loss}"
+                    )
+
                 # We keep track of the loss at each logged step
                 total_loss += loss.detach().float()
                 accelerator.backward(loss)
@@ -1024,6 +1032,9 @@ def main(args: FlatArguments, tc: TokenizerConfig):
                 progress_bar.update(1)
                 completed_steps += 1
                 if args.logging_steps and completed_steps % args.logging_steps == 0:
+                    logger.info(
+                        f"Loss post gather from accelerator is: {accelerator.gather(total_loss).mean().item()}"
+                    )
                     avg_loss = (
                         accelerator.gather(total_loss).mean().item()
                         / args.gradient_accumulation_steps
