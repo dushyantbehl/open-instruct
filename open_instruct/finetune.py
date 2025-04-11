@@ -131,7 +131,7 @@ class FlatArguments:
     
     #== DQA: FUNCTIONS USED TO TRANSFORM TRAINING DATASET (USED IN dataset_transformation.py)
     dataset_transform_fn: list[str] = field(
-        default_factory=lambda: ["sft_tulu_tokenize_and_truncate_v1", "sft_tulu_filter_v1"]
+        default_factory=lambda: ["sft_tulu_tokenize_and_truncate_v1"]
     )
     """The list of transform functions to apply to the dataset."""
     
