@@ -613,7 +613,6 @@ def main(args: FlatArguments, tc: TokenizerConfig):
     with accelerator.main_process_first():
         transform_fn_args = [
             {"max_seq_length": args.max_seq_length},
-            {},
         ]
         
         if accelerator.is_main_process:
