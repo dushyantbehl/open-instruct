@@ -911,7 +911,23 @@ def main(args: FlatArguments, tc: TokenizerConfig):
     logger.info(f"  Logging steps = {args.logging_steps}")
     logger.info("\n ================================================================================")
 
-    
+    if accelerator.is_main_process:
+        logger.info("************ Full list of args to the trainer ***************")
+        logger.info("model")
+        logger.info(model)
+        logger.info("tokenizer")
+        logger.info(tokenizer)
+        logger.info("train_dataset")
+        logger.info(train_dataset)
+        logger.info("data_collator")
+        logger.info(train_dataloader)
+        logger.info("training_args")
+        logger.info(args)
+        logger.info("tokenizer_args")
+        logger.info(tc)
+        logger.info("peft_config")
+        logger.info(peft_config)
+
     # #=== 00-DQA: DEBUG JUST BEFORE TRAINING:
     # sys.exist(0)
     # Only show the progress bar once on each machine.
