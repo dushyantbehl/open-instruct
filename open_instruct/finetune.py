@@ -1091,7 +1091,7 @@ def main(args: FlatArguments, tc: TokenizerConfig):
                         metrics_to_log["aux_loss"] = avg_aux_loss
                     else:
                         logger.info(
-                            f"  Step: {completed_steps}, LR: {lr_scheduler.get_last_lr()[0]}, Loss: {avg_loss}, TPS: {total_tokens / (time.time() - start_time)}"
+                            f"  Step: {completed_steps}, LR: {lr_scheduler.get_last_lr()[0]}, Loss: {avg_loss}, GradNorm {grad_norm}, TPS: {total_tokens / (time.time() - start_time)}"
                         )
                     if args.with_tracking:
                         accelerator.log(
