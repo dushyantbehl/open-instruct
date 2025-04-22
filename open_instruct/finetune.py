@@ -925,8 +925,6 @@ def main(args: FlatArguments, tc: TokenizerConfig):
         logger.info(args)
         logger.info("tokenizer_args")
         logger.info(tc)
-        logger.info("peft_config")
-        logger.info(peft_config)
 
     # #=== 00-DQA: DEBUG JUST BEFORE TRAINING:
     # sys.exist(0)
@@ -1008,6 +1006,9 @@ def main(args: FlatArguments, tc: TokenizerConfig):
                     # this can result in > 5 point improvements in AlpacaEval
                     # see https://github.com/huggingface/transformers/issues/24725 for
                     # more discussion and details.
+
+                    logger.info(f"Worker {accelerator.process_index} loss from model is {loss}")
+
                     logits = outputs.logits
                     labels = batch["labels"]
                     # Shift so that tokens < n predict n
@@ -1027,7 +1028,7 @@ def main(args: FlatArguments, tc: TokenizerConfig):
                             f"load balancing loss is enabled {aux_loss}"
                         )
                     logger.info(
-                        f"Loss right from function: {loss}"
+                        f"Worker {accelerator.process_index} Loss right from cross entropy sum function: {loss}"
                     )
 
                 # We keep track of the loss at each logged step
