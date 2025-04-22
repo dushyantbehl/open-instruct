@@ -1007,7 +1007,7 @@ def main(args: FlatArguments, tc: TokenizerConfig):
                     # see https://github.com/huggingface/transformers/issues/24725 for
                     # more discussion and details.
 
-                    print(f"*************************** Worker {accelerator.process_index} loss from model is {outputs.loss}")
+                    print(f"*************************** Worker {accelerator.process_index} loss from model is {outputs.loss}\n")
 
                     logits = outputs.logits
                     labels = batch["labels"]
@@ -1028,7 +1028,7 @@ def main(args: FlatArguments, tc: TokenizerConfig):
                             f"load balancing loss is enabled {aux_loss}"
                         )
                     print(
-                        f"*************************** Worker {accelerator.process_index} Loss right from cross entropy sum function: {loss}"
+                        f"*************************** Worker {accelerator.process_index} Loss right from cross entropy sum function: {loss}\n"
                     )
 
                 # We keep track of the loss at each logged step
@@ -1059,7 +1059,7 @@ def main(args: FlatArguments, tc: TokenizerConfig):
                         grad_norm = grad_norm.item()
 
                     print(
-                        f"****************** Loss {accelerator.gather(total_loss).mean().item()} and grad norm {grad_norm} post gather from accelerator"
+                        f"****************** Worker {accelerator.process_index} Loss {accelerator.gather(total_loss).mean().item()} and grad norm {grad_norm} post gather from accelerator\n"
                     )
 
                     avg_loss = (
