@@ -1051,6 +1051,17 @@ def main(args: FlatArguments, tc: TokenizerConfig):
                     logger.info(
                         f"Loss post gather from accelerator is: {accelerator.gather(total_loss).mean().item()}"
                     )
+
+                    # Assume deepspeed is enabled.
+                    grad_norm = model.get_global_grad_norm()
+                    # In some cases the grad norm may not return a float
+                    if hasattr(grad_norm, "item"):
+                        grad_norm = grad_norm.item()
+
+                    print(
+                        f"****************** Loss {accelerator.gather(total_loss).mean().item()} and grad norm {grad_norm} post gather from accelerator"
+                    )
+
                     avg_loss = (
                         accelerator.gather(total_loss).mean().item()
                         / args.gradient_accumulation_steps
@@ -1075,7 +1086,7 @@ def main(args: FlatArguments, tc: TokenizerConfig):
                             / args.logging_steps
                         )
                         logger.info(
-                            f"  Step: {completed_steps}, LR: {lr_scheduler.get_last_lr()[0]}, Loss: {avg_loss}, Aux Loss: {avg_aux_loss}, TPS: {total_tokens / (time.time() - start_time)}"
+                            f"  Step: {completed_steps}, LR: {lr_scheduler.get_last_lr()[0]}, Loss: {avg_loss}, Aux Loss: {avg_aux_loss}, GradNorm {grad_norm}, TPS: {total_tokens / (time.time() - start_time)}"
                         )
                         metrics_to_log["aux_loss"] = avg_aux_loss
                     else:
