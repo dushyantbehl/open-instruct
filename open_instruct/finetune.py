@@ -1007,7 +1007,7 @@ def main(args: FlatArguments, tc: TokenizerConfig):
                     # see https://github.com/huggingface/transformers/issues/24725 for
                     # more discussion and details.
 
-                    logger.info(f"Worker {accelerator.process_index} loss from model is {loss}")
+                    logger.info(f"Worker {accelerator.process_index} loss from model is {outputs.loss}")
 
                     logits = outputs.logits
                     labels = batch["labels"]
