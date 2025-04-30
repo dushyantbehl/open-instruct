@@ -84,6 +84,8 @@ class FlatArguments:
     """The name of this experiment"""
     run_name: Optional[str] = None
     """A unique name of this run"""
+    do_not_randomize_output_dir: bool = False
+    """By default the output directory will be randomized"""
     model_name_or_path: Optional[str] = field(
         default=None,
         metadata={
@@ -524,7 +526,9 @@ def main(args: FlatArguments, tc: TokenizerConfig):
     #== DQA DEFINE CHECKPOINT FOLDER:
     args.run_name = f"{args.exp_name}__{args.seed}__{int(time.time())}"
     # args.run_name = f"checkpoint" #== DQA: for a fixed folder
-    args.output_dir = os.path.join(args.output_dir, args.run_name)
+    if not args.do_not_randomize_output_dir:
+        args.output_dir = os.path.join(args.output_dir, args.run_name)
+    logger.info("using the output directory: %s", args.output_dir)
     args.dataset_local_cache_dir = os.path.abspath(args.dataset_local_cache_dir)
     if is_beaker_job():
         args.dataset_local_cache_dir = "/weka/oe-adapt-default/allennlp/deletable_open_instruct_dataset_cache"
@@ -657,8 +661,9 @@ def main(args: FlatArguments, tc: TokenizerConfig):
             pprint("[DB Debug] Dumping the processed train dataset")
             pprint(f"[DB Debug] length of train_dataset is {len(train_dataset)}. Sample looks like -")
             visualize_token(train_dataset[0][INPUT_IDS_KEY], tokenizer)
-            save_dataset_shards(train_dataset, args.output_dir + "/text_dataset")
-            pprint(f"[DB Debug] dumped the processed train dataset to {args.output_dir + "/text_dataset"}")
+            text_dataset_output_dir = args.output_dir + "/text_dataset"
+            save_dataset_shards(train_dataset, text_dataset_output_dir)
+            pprint(f"[DB Debug] dumped the processed train dataset to {text_dataset_output_dir}")
 
         #== 00-DQA: PRINT A FEW SAMPLES (only on main process) FOR TESTING:
             print(f"\n========== DEBUGGING: PRINT FIRST 3 SAMPLES AFTER get_cached_dataset_tulu(): ==========\n")
